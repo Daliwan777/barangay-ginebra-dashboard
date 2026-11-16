@@ -1,235 +1,775 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#111214">
-    <meta name="description" content="A season statistics and performance dashboard for Barangay Ginebra San Miguel.">
-    <title>Ginebra Player Stats Dashboard</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="styles.css" rel="stylesheet">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f5f8fc" />
+    <meta
+      name="description"
+      content="Daliwan's Builders hardware store management system"
+    />
+    <title>Daliwan's Builders — Store Management</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg site-nav sticky-top">
-      <div class="container-fluid page-container">
-        <a class="navbar-brand brand-lockup" href="#home" aria-label="Ginebra dashboard home">
-          <span class="brand-mark" aria-hidden="true"><span>G</span></span>
-          <span class="brand-copy"><strong>GINEBRA</strong><small>PLAYER STATS</small></span>
+    <div class="app-shell">
+      <aside class="sidebar" id="sidebar">
+        <a class="brand" href="#" aria-label="Daliwan's Builders home">
+          <span class="brand-icon" aria-hidden="true"
+            ><svg viewBox="0 0 32 32">
+              <path d="M5 25V9l11-5 11 5v16H5Z" />
+              <path d="M11 25v-9h10v9M4 13l12 6 12-6M16 19v6" /></svg
+          ></span>
+          <span><strong>DALIWAN'S</strong><small>BUILDERS SUPPLY</small></span>
         </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavigation" aria-controls="mainNavigation" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="mainNavigation">
-          <div class="navbar-nav mx-auto">
-            <a class="nav-link active" href="#home">Overview</a>
-            <a class="nav-link" href="#players">Players</a>
-            <a class="nav-link" href="#team-stats">Team stats</a>
-            <a class="nav-link" href="#analytics">Analytics</a>
-          </div>
-          <div class="nav-actions">
-            <span class="season-pill"><span class="live-dot"></span> 2024–25 SEASON</span>
-            <button id="themeToggle" class="theme-toggle" type="button" aria-label="Switch to dark mode" title="Toggle dark mode"><span class="theme-icon" aria-hidden="true">☾</span></button>
-          </div>
+        <div class="side-label">WORKSPACE</div>
+        <nav class="side-nav" aria-label="Main navigation">
+          <button class="nav-item active" data-view="dashboard">
+            <span class="nav-icon">▦</span>Dashboard
+          </button>
+          <button class="nav-item" data-view="inventory">
+            <span class="nav-icon">▤</span>Inventory
+            <span id="lowStockBadge" class="nav-badge" hidden>0</span>
+          </button>
+          <button class="nav-item" data-view="pos">
+            <span class="nav-icon">▣</span>Point of sale
+          </button>
+          <button class="nav-item" data-view="reports">
+            <span class="nav-icon">▥</span>Sales reports
+          </button>
+          <button class="nav-item" data-view="customers">
+            <span class="nav-icon">♙</span>Customers
+          </button>
+          <button class="nav-item admin-only" data-view="team" hidden>
+            <span class="nav-icon">♧</span>Team access
+          </button>
+        </nav>
+        <div class="sidebar-spacer"></div>
+        <div class="help-card">
+          <span class="help-mark">?</span><strong>Need a hand?</strong>
+          <p>Keep your store running smoothly.</p>
+          <a href="#help">Store help <span>↗</span></a>
         </div>
-      </div>
-    </nav>
+        <div class="sidebar-foot">
+          <span class="online-dot"></span>Store system ready <small>v1.0</small>
+        </div>
+      </aside>
 
-    <main>
-      <section id="home" class="hero page-container">
-        <div class="hero-copy">
-          <div class="eyebrow"><span class="eyebrow-line"></span> NEVER SAY DIE</div>
-          <h1>Barangay Ginebra<br><span>San Miguel</span></h1>
-          <p class="hero-lede">The numbers behind the heart, hustle, and history.<br class="d-none d-md-block"> Explore the team's season at a glance.</p>
-          <a class="btn btn-ginebra" href="#players">Explore the roster <span aria-hidden="true">↗</span></a>
-        </div>
-        <div class="hero-art" role="img" aria-label="Basketball arena with dramatic red lighting">
-          <div class="hero-image"></div>
-          <div class="hero-image-shade"></div>
-          <div class="hero-art-label"><span>THE GIN KINGS</span><strong>HEART.<br>HUSTLE.<br>HISTORY.</strong></div>
-          <div class="hero-watermark" aria-hidden="true">G</div>
-          <div class="sample-stamp">SAMPLE SEASON DATA</div>
-        </div>
-        <div class="hero-bottom">
-          <span>PHILIPPINE BASKETBALL ASSOCIATION</span>
-          <span>SEASON SNAPSHOT <b>·</b> 2024–25</span>
-        </div>
-      </section>
-
-      <section class="page-container section-block" aria-labelledby="seasonHeading">
-        <div class="section-heading">
-          <div><div class="section-kicker">THE SEASON SO FAR</div><h2 id="seasonHeading">A team built to compete.</h2></div>
-          <span class="data-note"><span class="info-icon">i</span> Illustrative sample data</span>
-        </div>
-        <div class="overview-grid">
-          <article class="overview-card record-card">
-            <div class="card-topline"><span>WIN–LOSS RECORD</span><span class="card-icon">◷</span></div>
-            <div class="record-numbers"><strong>32</strong><i>—</i><strong>14</strong></div>
-            <div class="record-foot"><span><i class="legend-dot red-dot"></i> WINS</span><span><i class="legend-dot gray-dot"></i> LOSSES</span><span class="win-rate">69.6% WIN RATE</span></div>
-            <div class="record-track"><span></span></div>
-          </article>
-          <article class="overview-card">
-            <div class="card-topline"><span>LEAGUE RANK</span><span class="card-icon">♜</span></div>
-            <div class="metric-main">#<strong>2</strong><span>of 12 teams</span></div>
-            <div class="metric-caption"><span class="trend-up">↑ 2</span> spots from last season</div>
-            <div class="rank-mini" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-          </article>
-          <article class="overview-card">
-            <div class="card-topline"><span>POINTS PER GAME</span><span class="card-icon">◎</span></div>
-            <div class="metric-main"><strong>98.4</strong><span>PPG</span></div>
-            <div class="metric-caption"><span class="trend-up">↑ 4.2%</span> vs. league average</div>
-            <div class="sparkline-wrap"><canvas id="pointsSparkline" aria-label="Team points trend"></canvas></div>
-          </article>
-          <article class="overview-card">
-            <div class="card-topline"><span>TEAM REBOUNDS</span><span class="card-icon">↗</span></div>
-            <div class="metric-main"><strong>44.7</strong><span>RPG</span></div>
-            <div class="metric-caption">Per game this season</div>
-            <div class="mini-bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-          </article>
-        </div>
-      </section>
-
-      <section class="page-container section-block featured-section" aria-labelledby="featuredHeading">
-        <div class="section-heading">
-          <div><div class="section-kicker">PLAYER SPOTLIGHT</div><h2 id="featuredHeading">Leading the charge.</h2></div>
-          <button class="text-link" type="button" data-player-id="scottie-thompson">View full profile <span aria-hidden="true">→</span></button>
-        </div>
-        <article class="featured-player">
-          <div class="featured-photo" role="img" aria-label="Basketball player portrait">
-            <div class="featured-photo-overlay"></div>
-            <span class="featured-jersey">#11</span>
-            <span class="featured-season-label">SEASON MVP WATCH</span>
+      <div class="main-column">
+        <header class="topbar">
+          <button
+            class="mobile-menu"
+            id="mobileMenu"
+            type="button"
+            aria-label="Open navigation"
+          >
+            ☰
+          </button>
+          <div class="breadcrumb">
+            <span>Daliwan's Builders</span><b>/</b
+            ><strong id="pageTitle">Dashboard</strong>
           </div>
-          <div class="featured-info">
-            <div class="player-position">FORWARD <span>·</span> #11</div>
-            <h3>Scottie<br><span>Thompson</span></h3>
-            <p>Relentless on both ends. The heart of Ginebra's hustle and a force on the glass every single night.</p>
-            <div class="featured-stats">
-              <div><strong>17.8</strong><span>PPG</span></div>
-              <div><strong>9.6</strong><span>RPG</span></div>
-              <div><strong>5.1</strong><span>APG</span></div>
-              <div><strong>1.8</strong><span>SPG</span></div>
+          <div class="top-actions">
+            <label class="global-search"
+              ><span>⌕</span
+              ><input
+                id="globalSearch"
+                type="search"
+                placeholder="Search products or scan barcode"
+                aria-label="Search products or scan barcode"
+              /><kbd>⌘ K</kbd></label
+            >
+            <button
+              class="icon-button theme-button"
+              id="themeToggle"
+              type="button"
+              title="Toggle dark mode"
+              aria-label="Toggle dark mode"
+            >
+              ☾
+            </button>
+            <button
+              class="user-menu"
+              id="userMenu"
+              type="button"
+              aria-label="Sign out"
+            >
+              <span class="user-avatar">DB</span
+              ><span class="user-copy"
+                ><strong id="userName">Store staff</strong
+                ><small id="userRole">Staff</small></span
+              ><span class="chevron">⌄</span>
+            </button>
+          </div>
+        </header>
+
+        <main class="content">
+          <section class="view active" id="view-dashboard">
+            <div class="welcome-row">
+              <div>
+                <p class="eyebrow" id="todayLabel"></p>
+                <h1>
+                  Good day, <span id="welcomeName">there</span>
+                  <span class="wave">✦</span>
+                </h1>
+                <p class="muted">
+                  Here's how your hardware store is doing today.
+                </p>
+              </div>
+              <button class="button button-primary" data-go="pos">
+                <span>＋</span> New sale
+              </button>
             </div>
-            <button class="btn btn-outline-light profile-button" type="button" data-player-id="scottie-thompson">View player profile <span aria-hidden="true">↗</span></button>
-          </div>
-          <div class="featured-number" aria-hidden="true">11</div>
-        </article>
-      </section>
-
-      <section id="players" class="players-section section-block">
-        <div class="page-container">
-          <div class="section-heading">
-            <div><div class="section-kicker">MEET THE SQUAD</div><h2>Player statistics.</h2></div>
-            <div class="roster-count"><strong id="rosterCount">12</strong> PLAYERS</div>
-          </div>
-          <div class="table-toolbar">
-            <label class="search-box"><span aria-hidden="true">⌕</span><input id="playerSearch" type="search" placeholder="Search players..." aria-label="Search players by name"></label>
-            <label class="position-filter"><span>POSITION</span>
-              <select id="positionFilter" aria-label="Filter by position">
-                <option value="all">All positions</option><option value="Guard">Guard</option><option value="Forward">Forward</option><option value="Center">Center</option>
-              </select>
-            </label>
-            <div class="sort-hint"><span aria-hidden="true">↕</span> Select a column to sort</div>
-          </div>
-          <div class="table-scroll">
-            <table class="table player-table">
-              <thead><tr>
-                <th scope="col" class="player-col"><button data-sort="name">PLAYER <span>↕</span></button></th>
-                <th scope="col"><button data-sort="number"># <span>↕</span></button></th>
-                <th scope="col"><button data-sort="position">POS <span>↕</span></button></th>
-                <th scope="col"><button data-sort="gp">GP <span>↕</span></button></th>
-                <th scope="col"><button data-sort="ppg">PPG <span>↕</span></button></th>
-                <th scope="col"><button data-sort="rpg">RPG <span>↕</span></button></th>
-                <th scope="col"><button data-sort="apg">APG <span>↕</span></button></th>
-                <th scope="col"><button data-sort="spg">SPG <span>↕</span></button></th>
-                <th scope="col"><button data-sort="bpg">BPG <span>↕</span></button></th>
-                <th scope="col"><button data-sort="fg">FG% <span>↕</span></button></th>
-                <th scope="col"><button data-sort="three">3PT% <span>↕</span></button></th>
-                <th scope="col"><button data-sort="ft">FT% <span>↕</span></button></th>
-                <th scope="col"><button data-sort="mpg">MPG <span>↕</span></button></th>
-              </tr></thead>
-              <tbody id="playerRows"></tbody>
-            </table>
-            <div id="emptyState" class="empty-state" hidden>No players match your search. Try another name or position.</div>
-          </div>
-          <div class="table-footer">
-            <span id="pageSummary">Showing 1–8 of 12 players</span>
-            <div class="pagination-controls"><button id="prevPage" type="button" aria-label="Previous page">←</button><span id="pageNumbers"></span><button id="nextPage" type="button" aria-label="Next page">→</button></div>
-          </div>
-          <p class="table-disclaimer">Season statistics shown are illustrative sample data and are not official PBA records.</p>
-        </div>
-      </section>
-
-      <section id="team-stats" class="page-container section-block">
-        <div class="section-heading">
-          <div><div class="section-kicker">BY THE NUMBERS</div><h2>Team statistics.</h2></div>
-          <span class="data-note"><span class="info-icon">i</span> Per-game averages</span>
-        </div>
-        <div class="team-stats-layout">
-          <article class="chart-card team-chart-card">
-            <div class="chart-card-heading"><div><h3>Offensive profile</h3><span>Ginebra compared to league average</span></div><span class="chart-menu">•••</span></div>
-            <div class="chart-canvas"><canvas id="teamBarChart" aria-label="Bar chart comparing team statistics"></canvas></div>
-            <div class="chart-legend"><span><i class="legend-dot red-dot"></i> GINEBRA</span><span><i class="legend-dot pale-dot"></i> LEAGUE AVG.</span></div>
-          </article>
-          <article class="chart-card shooting-card">
-            <div class="chart-card-heading"><div><h3>Shooting efficiency</h3><span>Team conversion rates</span></div><span class="chart-menu">•••</span></div>
-            <div class="donut-wrap"><canvas id="shootingChart" aria-label="Doughnut chart showing shooting percentages"></canvas><div class="donut-center"><strong>46.8%</strong><span>FIELD GOALS</span></div></div>
-            <div class="shooting-legend"><div><i class="legend-dot red-dot"></i><span>Field goals</span><strong>46.8%</strong></div><div><i class="legend-dot orange-dot"></i><span>3-pointers</span><strong>35.2%</strong></div><div><i class="legend-dot pale-dot"></i><span>Free throws</span><strong>77.4%</strong></div></div>
-          </article>
-        </div>
-        <div class="team-stat-strip">
-          <div><span>TOTAL TEAM POINTS</span><strong>4,526</strong><small>98.4 per game</small></div>
-          <div><span>TEAM ASSISTS</span><strong>21.6</strong><small>Per game</small></div>
-          <div><span>TEAM REBOUNDS</span><strong>44.7</strong><small>Per game</small></div>
-          <div><span>FIELD GOAL %</span><strong>46.8%</strong><small>Season average</small></div>
-        </div>
-      </section>
-
-      <section id="analytics" class="analytics-section section-block">
-        <div class="page-container">
-          <div class="section-heading">
-            <div><div class="section-kicker">INSIDE THE GAME</div><h2>Season analytics.</h2></div>
-            <span class="data-note"><span class="info-icon">i</span> Illustrative sample data</span>
-          </div>
-          <div class="analytics-grid">
-            <article class="chart-card trend-card">
-              <div class="chart-card-heading"><div><h3>Scoring through the season</h3><span>Team points per game · last 10 games</span></div><div class="chart-value"><strong>98.4</strong><span>PPG</span></div></div>
-              <div class="trend-canvas"><canvas id="trendChart" aria-label="Line chart showing team scoring trend"></canvas></div>
+            <div class="metric-grid">
+              <article class="metric-card">
+                <div class="metric-top">
+                  <span>Today's sales</span
+                  ><span class="metric-icon blue">₱</span>
+                </div>
+                <strong id="todaySales" class="metric-value">₱0.00</strong>
+                <div class="metric-foot">
+                  <span id="todayCount">0 transactions</span
+                  ><span class="metric-context">Today</span>
+                </div>
+              </article>
+              <article class="metric-card">
+                <div class="metric-top">
+                  <span>This month</span
+                  ><span class="metric-icon violet">↗</span>
+                </div>
+                <strong id="monthSales" class="metric-value">₱0.00</strong>
+                <div class="metric-foot">
+                  <span id="monthCount">0 transactions</span
+                  ><span class="metric-context">Month to date</span>
+                </div>
+              </article>
+              <article class="metric-card">
+                <div class="metric-top">
+                  <span>This year</span><span class="metric-icon green">▥</span>
+                </div>
+                <strong id="yearSales" class="metric-value">₱0.00</strong>
+                <div class="metric-foot">
+                  <span id="yearCount">0 transactions</span
+                  ><span class="metric-context">Year to date</span>
+                </div>
+              </article>
+              <article class="metric-card">
+                <div class="metric-top">
+                  <span>Products in stock</span
+                  ><span class="metric-icon orange">▤</span>
+                </div>
+                <strong id="stockCount" class="metric-value">0</strong>
+                <div class="metric-foot">
+                  <span id="lowStockText">No low-stock items</span
+                  ><span class="metric-context">Items</span>
+                </div>
+              </article>
+            </div>
+            <div class="dashboard-grid">
+              <article class="panel sales-panel">
+                <div class="panel-heading">
+                  <div>
+                    <h2>Sales overview</h2>
+                    <p>Revenue over the last 7 days</p>
+                  </div>
+                  <span class="select-static">This week <span>⌄</span></span>
+                </div>
+                <div class="chart-summary">
+                  <strong id="weekSales">₱0</strong><span>Last 7 days</span>
+                </div>
+                <div class="chart-wrap">
+                  <canvas
+                    id="salesChart"
+                    role="img"
+                    aria-label="Sales over the last seven days"
+                  ></canvas>
+                </div>
+              </article>
+              <article class="panel stock-panel">
+                <div class="panel-heading">
+                  <div>
+                    <h2>Stock alerts</h2>
+                    <p>Products that need attention</p>
+                  </div>
+                  <button class="plain-link" data-go="inventory">
+                    View inventory <span>→</span>
+                  </button>
+                </div>
+                <div id="stockAlerts" class="stock-alert-list"></div>
+              </article>
+            </div>
+            <article class="panel recent-panel">
+              <div class="panel-heading">
+                <div>
+                  <h2>Recent sales</h2>
+                  <p>Your latest transactions</p>
+                </div>
+                <button class="plain-link" data-go="reports">
+                  All sales <span>→</span>
+                </button>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>RECEIPT</th>
+                      <th>DATE &amp; TIME</th>
+                      <th>CUSTOMER</th>
+                      <th>ITEMS</th>
+                      <th class="align-right">TOTAL</th>
+                    </tr>
+                  </thead>
+                  <tbody id="recentSales"></tbody>
+                </table>
+              </div>
             </article>
-            <article class="chart-card leaders-card">
-              <div class="chart-card-heading"><div><h3>Season leaders</h3><span>Top performers per game</span></div></div>
-              <div class="leader-tabs" role="tablist" aria-label="Choose leaderboard statistic"><button class="leader-tab active" data-leader="ppg" type="button" role="tab" aria-selected="true">POINTS</button><button class="leader-tab" data-leader="rpg" type="button" role="tab" aria-selected="false">REBOUNDS</button><button class="leader-tab" data-leader="apg" type="button" role="tab" aria-selected="false">ASSISTS</button></div>
-              <div id="leaderList" class="leader-list"></div>
-            </article>
-          </div>
-        </div>
-      </section>
-    </main>
+          </section>
 
-    <footer class="site-footer">
-      <div class="page-container footer-inner">
-        <a class="brand-lockup footer-brand" href="#home"><span class="brand-mark" aria-hidden="true"><span>G</span></span><span class="brand-copy"><strong>GINEBRA</strong><small>PLAYER STATS</small></span></a>
-        <p>Built for the fans. Inspired by the game.<br><span>Independent fan-made dashboard · Not affiliated with the PBA.</span></p>
-        <a class="back-top" href="#home">BACK TO TOP ↑</a>
+          <section class="view" id="view-inventory">
+            <div class="section-top">
+              <div>
+                <p class="eyebrow">CATALOG &amp; STOCK</p>
+                <h1>Inventory</h1>
+                <p class="muted">Manage products, prices, and stock levels.</p>
+              </div>
+              <button class="button button-primary" id="addProduct">
+                <span>＋</span> Add product
+              </button>
+            </div>
+            <div class="panel inventory-panel">
+              <div class="toolbar">
+                <label class="table-search"
+                  ><span>⌕</span
+                  ><input
+                    id="inventorySearch"
+                    type="search"
+                    placeholder="Search name, SKU, or barcode" /></label
+                ><select id="stockFilter" aria-label="Filter inventory">
+                  <option value="all">All stock levels</option>
+                  <option value="low">Low stock</option>
+                  <option value="out">Out of stock</option></select
+                ><span id="inventoryCount" class="muted small"></span>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>PRODUCT</th>
+                      <th>SKU / BARCODE</th>
+                      <th>CATEGORY</th>
+                      <th>PRICE</th>
+                      <th>IN STOCK</th>
+                      <th>STATUS</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody id="productRows"></tbody>
+                </table>
+              </div>
+              <div id="emptyInventory" class="empty-state" hidden>
+                No products found. Add your first product to get started.
+              </div>
+            </div>
+          </section>
+
+          <section class="view" id="view-pos">
+            <div class="section-top">
+              <div>
+                <p class="eyebrow">CHECKOUT</p>
+                <h1>Point of sale</h1>
+                <p class="muted">
+                  Scan a barcode or search to add products to the sale.
+                </p>
+              </div>
+              <span class="date-chip" id="posDate"></span>
+            </div>
+            <div class="pos-layout">
+              <div class="panel catalog-panel">
+                <div class="toolbar pos-toolbar">
+                  <label class="table-search"
+                    ><span>⌕</span
+                    ><input
+                      id="posSearch"
+                      type="search"
+                      placeholder="Search products or scan barcode"
+                      autocomplete="off" /></label
+                  ><select id="posCategory" aria-label="Filter by category">
+                    <option value="all">All categories</option>
+                  </select>
+                </div>
+                <div id="posProducts" class="product-grid"></div>
+              </div>
+              <aside class="panel cart-panel">
+                <div class="panel-heading cart-heading">
+                  <div>
+                    <h2>Current sale</h2>
+                    <p id="cartItemCount">0 items</p>
+                  </div>
+                  <button id="clearCart" class="text-button" type="button">
+                    Clear
+                  </button>
+                </div>
+                <label class="field-label"
+                  >CUSTOMER
+                  <select id="saleCustomer">
+                    <option value="">Walk-in customer</option>
+                  </select></label
+                >
+                <div id="cartItems" class="cart-items">
+                  <div class="cart-empty">
+                    <span>▣</span><strong>Your cart is empty</strong
+                    ><small>Add products to start a sale.</small>
+                  </div>
+                </div>
+                <div class="cart-bottom">
+                  <div class="total-row">
+                    <span>Subtotal</span
+                    ><strong id="cartSubtotal">₱0.00</strong>
+                  </div>
+                  <div class="total-row grand-total">
+                    <span>Total due</span><strong id="cartTotal">₱0.00</strong>
+                  </div>
+                  <button
+                    class="button button-primary checkout-button"
+                    id="checkoutButton"
+                    disabled
+                  >
+                    Charge <span id="chargeAmount">₱0.00</span><span>→</span>
+                  </button>
+                  <p class="secure-note">Payment collected in store · PHP</p>
+                </div>
+              </aside>
+            </div>
+          </section>
+
+          <section class="view" id="view-reports">
+            <div class="section-top">
+              <div>
+                <p class="eyebrow">BUSINESS PERFORMANCE</p>
+                <h1>Sales reports</h1>
+                <p class="muted">
+                  Review transactions and export a printable report.
+                </p>
+              </div>
+              <button class="button button-secondary" id="exportReport">
+                ⇩ Export / Print
+              </button>
+            </div>
+            <div class="report-filters panel">
+              <div class="period-tabs" role="group" aria-label="Report period">
+                <button class="period-tab active" data-period="day">
+                  Daily</button
+                ><button class="period-tab" data-period="month">Monthly</button
+                ><button class="period-tab" data-period="year">Yearly</button>
+              </div>
+              <label class="date-filter"
+                >Date <input id="reportDate" type="date" /></label
+              ><button
+                class="button button-small button-secondary"
+                id="runReport"
+              >
+                Apply
+              </button>
+            </div>
+            <div class="report-metrics">
+              <article class="metric-card">
+                <span class="metric-label">Gross sales</span
+                ><strong id="reportSales" class="metric-value">₱0.00</strong>
+              </article>
+              <article class="metric-card">
+                <span class="metric-label">Transactions</span
+                ><strong id="reportTransactions" class="metric-value">0</strong>
+              </article>
+              <article class="metric-card">
+                <span class="metric-label">Items sold</span
+                ><strong id="reportItems" class="metric-value">0</strong>
+              </article>
+              <article class="metric-card">
+                <span class="metric-label">Average sale</span
+                ><strong id="reportAverage" class="metric-value">₱0.00</strong>
+              </article>
+            </div>
+            <article class="panel report-chart-panel">
+              <div class="panel-heading">
+                <div>
+                  <h2 id="reportHeading">Sales by hour</h2>
+                  <p>Sales volume for the selected period</p>
+                </div>
+              </div>
+              <div class="chart-wrap report-chart-wrap">
+                <canvas
+                  id="reportChart"
+                  role="img"
+                  aria-label="Sales report chart"
+                ></canvas>
+              </div>
+            </article>
+            <article class="panel report-table-panel">
+              <div class="panel-heading">
+                <div>
+                  <h2>Transactions</h2>
+                  <p id="reportRangeLabel">No date selected</p>
+                </div>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>RECEIPT</th>
+                      <th>DATE &amp; TIME</th>
+                      <th>CUSTOMER</th>
+                      <th>ITEMS</th>
+                      <th>STAFF</th>
+                      <th class="align-right">TOTAL</th>
+                    </tr>
+                  </thead>
+                  <tbody id="reportRows"></tbody>
+                </table>
+              </div>
+            </article>
+          </section>
+
+          <section class="view" id="view-customers">
+            <div class="section-top">
+              <div>
+                <p class="eyebrow">CUSTOMER DIRECTORY</p>
+                <h1>Customers</h1>
+                <p class="muted">
+                  Keep customer details organized for every sale.
+                </p>
+              </div>
+              <button class="button button-primary" id="addCustomer">
+                <span>＋</span> Add customer
+              </button>
+            </div>
+            <article class="panel">
+              <div class="toolbar">
+                <label class="table-search"
+                  ><span>⌕</span
+                  ><input
+                    id="customerSearch"
+                    type="search"
+                    placeholder="Search customers" /></label
+                ><span id="customerCount" class="muted small"></span>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>CUSTOMER</th>
+                      <th>PHONE</th>
+                      <th>EMAIL</th>
+                      <th>SALES</th>
+                      <th>JOINED</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody id="customerRows"></tbody>
+                </table>
+              </div>
+              <div id="emptyCustomers" class="empty-state" hidden>
+                No customers found.
+              </div>
+            </article>
+          </section>
+
+          <section class="view" id="view-team">
+            <div class="section-top">
+              <div>
+                <p class="eyebrow">ACCESS CONTROL</p>
+                <h1>Team access</h1>
+                <p class="muted">Add staff accounts for your store.</p>
+              </div>
+              <button class="button button-primary" id="addUser">
+                <span>＋</span> Add team member
+              </button>
+            </div>
+            <article class="panel">
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>TEAM MEMBER</th>
+                      <th>EMAIL</th>
+                      <th>ROLE</th>
+                      <th>CREATED</th>
+                    </tr>
+                  </thead>
+                  <tbody id="userRows"></tbody>
+                </table>
+              </div>
+            </article>
+          </section>
+          <footer class="content-footer">
+            <span>© <span id="yearNow"></span> Daliwan's Builders Supply</span
+            ><span>Built for better business <b>·</b> Philippine peso (₱)</span>
+          </footer>
+        </main>
       </div>
-    </footer>
+    </div>
 
-    <div class="modal fade" id="playerModal" tabindex="-1" aria-labelledby="modalPlayerName" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content player-modal">
-          <button type="button" class="modal-close" data-bs-dismiss="modal" aria-label="Close">×</button>
-          <div class="modal-player-header"><img class="modal-avatar" id="modalAvatar" src="https://images.unsplash.com/photo-1519861531473-9200262188bf?auto=format&fit=crop&w=160&q=80" alt="Illustrative basketball player portrait"><div><div class="player-position" id="modalPosition"></div><h2 id="modalPlayerName"></h2><p id="modalBio"></p></div></div>
-          <div class="modal-stat-grid" id="modalStats"></div>
-          <div class="modal-chart-heading"><h3>Recent game performance</h3><span>Last 6 games · points</span></div>
-          <div class="modal-chart"><canvas id="profileChart" aria-label="Player recent points chart"></canvas></div>
-          <div class="career-note"><span>✦ CAREER HIGHLIGHT</span><p id="modalHighlight"></p></div>
+    <div class="modal-backdrop" id="loginModal" hidden>
+      <form class="dialog login-dialog" id="loginForm">
+        <div class="login-brand">
+          <span class="brand-icon"
+            ><svg viewBox="0 0 32 32">
+              <path d="M5 25V9l11-5 11 5v16H5Z" />
+              <path d="M11 25v-9h10v9M4 13l12 6 12-6M16 19v6" /></svg></span
+          ><span><strong>DALIWAN'S</strong><small>BUILDERS SUPPLY</small></span>
+        </div>
+        <p class="eyebrow">STORE MANAGEMENT</p>
+        <h2>Welcome back</h2>
+        <p class="muted">Sign in to manage your store.</p>
+        <label class="field-label"
+          >EMAIL ADDRESS<input
+            name="email"
+            type="email"
+            required
+            autocomplete="username"
+            placeholder="you@yourstore.com"
+        /></label>
+        <label class="field-label"
+          >PASSWORD<input
+            name="password"
+            type="password"
+            required
+            autocomplete="current-password"
+            placeholder="Your password"
+        /></label>
+        <p class="form-error" id="loginError" hidden></p>
+        <button class="button button-primary full-button" type="submit">
+          Sign in <span>→</span>
+        </button>
+        <p class="login-help">
+          First time setting up? Run <a href="setup.php">the secure setup</a> on
+          your server.
+        </p>
+      </form>
+    </div>
+
+    <div class="modal-backdrop" id="productModal" hidden>
+      <form class="dialog form-dialog" id="productForm">
+        <div class="dialog-heading">
+          <div>
+            <p class="eyebrow">PRODUCT DETAILS</p>
+            <h2 id="productDialogTitle">Add product</h2>
+          </div>
+          <button
+            class="close-button"
+            type="button"
+            data-close="productModal"
+            aria-label="Close"
+          >
+            ×
+          </button>
+        </div>
+        <input type="hidden" name="id" />
+        <div class="form-grid">
+          <label class="field-label span-two"
+            >PRODUCT NAME<input
+              name="name"
+              required
+              maxlength="160"
+              placeholder="e.g. 4-inch galvanized nail"
+          /></label>
+          <label class="field-label"
+            >SKU<input name="sku" maxlength="64" placeholder="NAI-004" /></label
+          ><label class="field-label"
+            >BARCODE<input
+              name="barcode"
+              maxlength="64"
+              placeholder="Scan or enter code"
+          /></label>
+          <label class="field-label"
+            >CATEGORY<input
+              name="category"
+              required
+              maxlength="80"
+              placeholder="Nails &amp; fasteners" /></label
+          ><label class="field-label"
+            >PRICE (PHP)<input
+              name="price"
+              type="number"
+              min="0.01"
+              step="0.01"
+              required
+              placeholder="0.00"
+          /></label>
+          <label class="field-label"
+            >STOCK QUANTITY<input
+              name="stock"
+              type="number"
+              min="0"
+              step="1"
+              required
+              placeholder="0" /></label
+          ><label class="field-label"
+            >LOW-STOCK ALERT AT<input
+              name="low_stock_threshold"
+              type="number"
+              min="0"
+              step="1"
+              required
+              value="5"
+          /></label>
+          <label class="field-label span-two"
+            >PRODUCT IMAGE URL<input
+              name="image_url"
+              type="url"
+              maxlength="500"
+              placeholder="https://..."
+          /></label>
+        </div>
+        <p class="form-error" id="productError" hidden></p>
+        <div class="dialog-actions">
+          <button
+            class="button button-secondary"
+            type="button"
+            data-close="productModal"
+          >
+            Cancel</button
+          ><button class="button button-primary" type="submit">
+            Save product
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="modal-backdrop" id="customerModal" hidden>
+      <form class="dialog form-dialog compact-dialog" id="customerForm">
+        <div class="dialog-heading">
+          <div>
+            <p class="eyebrow">CUSTOMER DIRECTORY</p>
+            <h2 id="customerDialogTitle">Add customer</h2>
+          </div>
+          <button
+            class="close-button"
+            type="button"
+            data-close="customerModal"
+            aria-label="Close"
+          >
+            ×
+          </button>
+        </div>
+        <input type="hidden" name="id" /><label class="field-label"
+          >FULL NAME<input
+            name="name"
+            required
+            maxlength="160"
+            placeholder="Customer name" /></label
+        ><label class="field-label"
+          >PHONE<input name="phone" maxlength="40" placeholder="+63" /></label
+        ><label class="field-label"
+          >EMAIL<input
+            name="email"
+            type="email"
+            maxlength="190"
+            placeholder="name@example.com"
+        /></label>
+        <p class="form-error" id="customerError" hidden></p>
+        <div class="dialog-actions">
+          <button
+            class="button button-secondary"
+            type="button"
+            data-close="customerModal"
+          >
+            Cancel</button
+          ><button class="button button-primary" type="submit">
+            Save customer
+          </button>
+        </div>
+      </form>
+    </div>
+    <div class="modal-backdrop" id="userModal" hidden>
+      <form class="dialog form-dialog compact-dialog" id="userForm">
+        <div class="dialog-heading">
+          <div>
+            <p class="eyebrow">STORE TEAM</p>
+            <h2>Add team member</h2>
+          </div>
+          <button
+            class="close-button"
+            type="button"
+            data-close="userModal"
+            aria-label="Close"
+          >
+            ×
+          </button>
+        </div>
+        <label class="field-label"
+          >FULL NAME<input name="name" required maxlength="120" /></label
+        ><label class="field-label"
+          >EMAIL<input
+            name="email"
+            type="email"
+            required
+            maxlength="190" /></label
+        ><label class="field-label"
+          >PASSWORD<input
+            name="password"
+            type="password"
+            required
+            minlength="10"
+            autocomplete="new-password"
+          /><small>Use at least 10 characters.</small></label
+        ><label class="field-label"
+          >ROLE<select name="role">
+            <option value="staff">Staff</option>
+            <option value="admin">Admin</option>
+          </select></label
+        >
+        <p class="form-error" id="userError" hidden></p>
+        <div class="dialog-actions">
+          <button
+            class="button button-secondary"
+            type="button"
+            data-close="userModal"
+          >
+            Cancel</button
+          ><button class="button button-primary" type="submit">
+            Create account
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="modal-backdrop" id="receiptModal" hidden>
+      <div class="dialog receipt-dialog" id="receiptContent">
+        <div class="receipt-brand">
+          <span class="brand-icon"
+            ><svg viewBox="0 0 32 32">
+              <path d="M5 25V9l11-5 11 5v16H5Z" />
+              <path d="M11 25v-9h10v9M4 13l12 6 12-6M16 19v6" /></svg></span
+          ><span
+            ><strong>DALIWAN'S BUILDERS</strong
+            ><small>OFFICIAL SALES RECEIPT</small></span
+          >
+        </div>
+        <div id="receiptDetails"></div>
+        <div class="receipt-actions no-print">
+          <button
+            class="button button-secondary"
+            type="button"
+            data-close="receiptModal"
+          >
+            Done</button
+          ><button
+            class="button button-primary"
+            id="printReceipt"
+            type="button"
+          >
+            Print receipt
+          </button>
         </div>
       </div>
     </div>
-    <div id="loadingScreen" class="loading-screen" aria-label="Loading dashboard"><span class="loading-mark">G</span><span>LOADING THE NUMBERS</span></div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <div class="toast-region" id="toastRegion" aria-live="polite"></div>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
     <script src="app.js"></script>
   </body>
