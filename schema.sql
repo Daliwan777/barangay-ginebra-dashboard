@@ -1,111 +1,92 @@
-CREATE DATABASE IF NOT EXISTS ginebra_stats
+CREATE DATABASE IF NOT EXISTS daliwans_builders
   CHARACTER SET utf8mb4
   COLLATE utf8mb4_unicode_ci;
 
-USE ginebra_stats;
+USE daliwans_builders;
 
-CREATE TABLE IF NOT EXISTS players (
-  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  player_key VARCHAR(64) NOT NULL,
-  first_name VARCHAR(80) NOT NULL,
-  last_name VARCHAR(80) NOT NULL,
-  jersey_number TINYINT UNSIGNED,
-  position ENUM('Guard', 'Forward', 'Center') NOT NULL,
-  height_cm SMALLINT UNSIGNED,
-  date_of_birth DATE,
-  photo_url VARCHAR(500),
+CREATE TABLE IF NOT EXISTS users (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  name VARCHAR(120) NOT NULL,
+  email VARCHAR(190) NOT NULL,
+  password_hash VARCHAR(255) NOT NULL,
+  role ENUM('admin', 'staff') NOT NULL DEFAULT 'staff',
+  active BOOLEAN NOT NULL DEFAULT TRUE,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  UNIQUE KEY uq_users_email (email)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS customers (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  name VARCHAR(160) NOT NULL,
+  phone VARCHAR(40) NULL,
+  email VARCHAR(190) NULL,
+  active BOOLEAN NOT NULL DEFAULT TRUE,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  KEY idx_customers_name (name),
+  UNIQUE KEY uq_customers_email (email)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS products (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  name VARCHAR(160) NOT NULL,
+  sku VARCHAR(64) NULL,
+  barcode VARCHAR(64) NULL,
+  category VARCHAR(80) NOT NULL,
+  price DECIMAL(12,2) NOT NULL,
+  stock INT UNSIGNED NOT NULL DEFAULT 0,
+  low_stock_threshold INT UNSIGNED NOT NULL DEFAULT 5,
+  unit VARCHAR(24) NOT NULL DEFAULT 'pcs',
+  image_url VARCHAR(500) NULL,
   active BOOLEAN NOT NULL DEFAULT TRUE,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
-  UNIQUE KEY uq_players_player_key (player_key),
-  UNIQUE KEY uq_players_jersey_number (jersey_number)
+  UNIQUE KEY uq_products_sku (sku),
+  UNIQUE KEY uq_products_barcode (barcode),
+  KEY idx_products_category (category),
+  KEY idx_products_active_stock (active, stock)
 ) ENGINE=InnoDB;
 
-CREATE TABLE IF NOT EXISTS games (
-  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  season VARCHAR(9) NOT NULL,
-  game_date DATE NOT NULL,
-  opponent VARCHAR(120) NOT NULL,
-  is_home BOOLEAN NOT NULL DEFAULT FALSE,
-  result ENUM('W', 'L') NOT NULL,
-  team_points SMALLINT UNSIGNED NOT NULL,
-  opponent_points SMALLINT UNSIGNED NOT NULL,
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (id),
-  KEY idx_games_season_date (season, game_date),
-  KEY idx_games_season_result (season, result)
-) ENGINE=InnoDB;
-
-CREATE TABLE IF NOT EXISTS player_stats (
+CREATE TABLE IF NOT EXISTS sales (
   id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  player_id INT UNSIGNED NOT NULL,
-  game_id INT UNSIGNED NOT NULL,
-  minutes_played DECIMAL(5,2) NOT NULL DEFAULT 0,
-  points SMALLINT UNSIGNED NOT NULL DEFAULT 0,
-  rebounds SMALLINT UNSIGNED NOT NULL DEFAULT 0,
-  assists SMALLINT UNSIGNED NOT NULL DEFAULT 0,
-  steals SMALLINT UNSIGNED NOT NULL DEFAULT 0,
-  blocks SMALLINT UNSIGNED NOT NULL DEFAULT 0,
-  fg_made SMALLINT UNSIGNED NOT NULL DEFAULT 0,
-  fg_attempted SMALLINT UNSIGNED NOT NULL DEFAULT 0,
-  three_pt_made SMALLINT UNSIGNED NOT NULL DEFAULT 0,
-  three_pt_attempted SMALLINT UNSIGNED NOT NULL DEFAULT 0,
-  ft_made SMALLINT UNSIGNED NOT NULL DEFAULT 0,
-  ft_attempted SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+  receipt_number VARCHAR(32) NOT NULL,
+  customer_id BIGINT UNSIGNED NULL,
+  user_id BIGINT UNSIGNED NOT NULL,
+  subtotal DECIMAL(12,2) NOT NULL,
+  total DECIMAL(12,2) NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
-  UNIQUE KEY uq_player_stats_player_game (player_id, game_id),
-  KEY idx_player_stats_game (game_id),
-  CONSTRAINT fk_player_stats_player FOREIGN KEY (player_id) REFERENCES players (id) ON DELETE CASCADE,
-  CONSTRAINT fk_player_stats_game FOREIGN KEY (game_id) REFERENCES games (id) ON DELETE CASCADE,
-  CONSTRAINT chk_fg_attempts CHECK (fg_made <= fg_attempted),
-  CONSTRAINT chk_three_pt_attempts CHECK (three_pt_made <= three_pt_attempted),
-  CONSTRAINT chk_ft_attempts CHECK (ft_made <= ft_attempted)
+  UNIQUE KEY uq_sales_receipt (receipt_number),
+  KEY idx_sales_created_at (created_at),
+  KEY idx_sales_customer (customer_id),
+  KEY idx_sales_user (user_id),
+  CONSTRAINT fk_sales_customer FOREIGN KEY (customer_id) REFERENCES customers (id) ON DELETE SET NULL,
+  CONSTRAINT fk_sales_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE RESTRICT
 ) ENGINE=InnoDB;
 
-CREATE TABLE IF NOT EXISTS team_stats (
+CREATE TABLE IF NOT EXISTS sale_items (
   id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  game_id INT UNSIGNED NOT NULL,
-  team_points SMALLINT UNSIGNED NOT NULL DEFAULT 0,
-  rebounds SMALLINT UNSIGNED NOT NULL DEFAULT 0,
-  assists SMALLINT UNSIGNED NOT NULL DEFAULT 0,
-  steals SMALLINT UNSIGNED NOT NULL DEFAULT 0,
-  blocks SMALLINT UNSIGNED NOT NULL DEFAULT 0,
-  fg_made SMALLINT UNSIGNED NOT NULL DEFAULT 0,
-  fg_attempted SMALLINT UNSIGNED NOT NULL DEFAULT 0,
-  three_pt_made SMALLINT UNSIGNED NOT NULL DEFAULT 0,
-  three_pt_attempted SMALLINT UNSIGNED NOT NULL DEFAULT 0,
-  ft_made SMALLINT UNSIGNED NOT NULL DEFAULT 0,
-  ft_attempted SMALLINT UNSIGNED NOT NULL DEFAULT 0,
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  sale_id BIGINT UNSIGNED NOT NULL,
+  product_id BIGINT UNSIGNED NULL,
+  product_name VARCHAR(160) NOT NULL,
+  quantity INT UNSIGNED NOT NULL,
+  unit_price DECIMAL(12,2) NOT NULL,
+  line_total DECIMAL(12,2) NOT NULL,
   PRIMARY KEY (id),
-  UNIQUE KEY uq_team_stats_game (game_id),
-  CONSTRAINT fk_team_stats_game FOREIGN KEY (game_id) REFERENCES games (id) ON DELETE CASCADE,
-  CONSTRAINT chk_team_fg_attempts CHECK (fg_made <= fg_attempted),
-  CONSTRAINT chk_team_three_pt_attempts CHECK (three_pt_made <= three_pt_attempted),
-  CONSTRAINT chk_team_ft_attempts CHECK (ft_made <= ft_attempted)
+  KEY idx_sale_items_sale (sale_id),
+  KEY idx_sale_items_product (product_id),
+  CONSTRAINT fk_sale_items_sale FOREIGN KEY (sale_id) REFERENCES sales (id) ON DELETE CASCADE,
+  CONSTRAINT fk_sale_items_product FOREIGN KEY (product_id) REFERENCES products (id) ON DELETE SET NULL
 ) ENGINE=InnoDB;
 
--- Season averages are derived from game-level totals, not stored redundantly.
-CREATE OR REPLACE VIEW player_season_averages AS
-SELECT
-  p.id AS player_id,
-  CONCAT(p.first_name, ' ', p.last_name) AS player_name,
-  p.jersey_number,
-  p.position,
-  g.season,
-  COUNT(ps.id) AS games_played,
-  ROUND(AVG(ps.minutes_played), 1) AS mpg,
-  ROUND(AVG(ps.points), 1) AS ppg,
-  ROUND(AVG(ps.rebounds), 1) AS rpg,
-  ROUND(AVG(ps.assists), 1) AS apg,
-  ROUND(AVG(ps.steals), 1) AS spg,
-  ROUND(AVG(ps.blocks), 1) AS bpg,
-  ROUND(100 * SUM(ps.fg_made) / NULLIF(SUM(ps.fg_attempted), 0), 1) AS fg_pct,
-  ROUND(100 * SUM(ps.three_pt_made) / NULLIF(SUM(ps.three_pt_attempted), 0), 1) AS three_pt_pct,
-  ROUND(100 * SUM(ps.ft_made) / NULLIF(SUM(ps.ft_attempted), 0), 1) AS ft_pct
-FROM players p
-JOIN player_stats ps ON ps.player_id = p.id
-JOIN games g ON g.id = ps.game_id
-GROUP BY p.id, p.first_name, p.last_name, p.jersey_number, p.position, g.season;
+INSERT IGNORE INTO products (name, sku, barcode, category, price, stock, low_stock_threshold, unit, image_url) VALUES
+('Claw hammer, 16 oz', 'TOL-HAM-016', '4800001000011', 'Hand tools', 385.00, 24, 5, 'pcs', 'https://images.unsplash.com/photo-1581147036324-c1c89c2c8a93?auto=format&fit=crop&w=480&q=80'),
+('Combination pliers, 8 in', 'TOL-PLI-008', '4800001000012', 'Hand tools', 245.00, 17, 5, 'pcs', 'https://images.unsplash.com/photo-1530124566582-a618bc2615dc?auto=format&fit=crop&w=480&q=80'),
+('Tape measure, 5 m', 'TOL-TAP-005', '4800001000013', 'Hand tools', 129.00, 31, 8, 'pcs', 'https://images.unsplash.com/photo-1586864387967-d02ef85d93e8?auto=format&fit=crop&w=480&q=80'),
+('Cordless drill, 12 V', 'PWR-DRL-012', '4800001000014', 'Power tools', 2895.00, 7, 3, 'pcs', 'https://images.unsplash.com/photo-1504148455328-c376907d081c?auto=format&fit=crop&w=480&q=80'),
+('LED bulb, 9 W daylight', 'ELE-BUL-009', '4800001000015', 'Electrical', 89.00, 48, 12, 'pcs', 'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=480&q=80'),
+('PVC elbow, 1/2 in', 'PLU-ELB-012', '4800001000016', 'Plumbing', 18.00, 4, 10, 'pcs', 'https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?auto=format&fit=crop&w=480&q=80'),
+('Wall paint, white 1 L', 'PNT-WHT-001', '4800001000017', 'Paint & supplies', 265.00, 13, 4, 'can', 'https://images.unsplash.com/photo-1562259949-e8e7689d7828?auto=format&fit=crop&w=480&q=80'),
+('Construction nails, 2 in (1 kg)', 'FST-NAI-002', '4800001000018', 'Nails & fasteners', 115.00, 36, 10, 'pack', 'https://images.unsplash.com/photo-1504148455328-c376907d081c?auto=format&fit=crop&w=480&q=80');
